@@ -57,3 +57,12 @@ def update_order(id):
 
     db.session.commit()
     return order_schema.jsonify(order)
+
+
+# Delete a Order
+@order_blueprint.route('/order/<id>', methods=['DELETE'])
+def delete_order(id):
+    order = Order.query.get_or_404(id)
+    db.session.delete(order)
+    db.session.commit()
+    return order_schema.jsonify(order)
