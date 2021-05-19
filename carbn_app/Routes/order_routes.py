@@ -32,6 +32,14 @@ def add_order(customer_id):
     return order_schema.jsonify(new_order)
 
 
+# Get All Orders
+@order_blueprint.route('/order', methods=['GET'])
+def get_orders():
+    all_orders = Order.query.all()
+    response = orders_schema.dump(all_orders)
+    return jsonify(response)
+
+
 # Get an Order
 @order_blueprint.route('/order/<id>', methods=['GET'])
 def get_order(id):
