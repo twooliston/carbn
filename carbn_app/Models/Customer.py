@@ -1,7 +1,7 @@
 from marshmallow import fields
 from sqlalchemy.orm import backref
 from sqlalchemy.sql.elements import Null
-from extensions import db, ma
+from carbn_app.extensions import db, ma
 
 from .Order import OrderSchema
 

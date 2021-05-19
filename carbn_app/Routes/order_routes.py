@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify
 
-from extensions import db
+from carbn_app.extensions import db
 
-from Models.Customer import Customer
-from Models.Order import Order, OrderSchema
+from carbn_app.Models.Customer import Customer
+from carbn_app.Models.Order import Order, OrderSchema
 
 import datetime
 

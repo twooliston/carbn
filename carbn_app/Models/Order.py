@@ -1,4 +1,4 @@
-from extensions import db, ma
+from carbn_app.extensions import db, ma
 
 from sqlalchemy.dialects.mysql import FLOAT
 

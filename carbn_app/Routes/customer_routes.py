@@ -1,10 +1,10 @@
 from sqlalchemy.sql.elements import or_
-from Models.Order import Order
+from carbn_app.Models.Order import Order
 from flask import Blueprint, request, jsonify
 
-from extensions import db
+from carbn_app.extensions import db
 
-from Models.Customer import Customer, CustomerSchema, FilteredCustomerSchema
+from carbn_app.Models.Customer import Customer, CustomerSchema, FilteredCustomerSchema
 
 # Init Schema
 customer_schema = CustomerSchema()
