@@ -26,10 +26,13 @@ def add_order(customer_id):
     date = datetime.datetime.strptime(date, "%d%m%Y").date()
 
     new_order = Order(id, customer.id, date, amount)
-    db.session.add(new_order)
-    db.session.commit()
 
-    return order_schema.jsonify(new_order)
+    try:
+        db.session.add(new_order)
+        db.session.commit()
+        return order_schema.jsonify(new_order)
+    except:
+        raise Exception("Could not commit a new order to database")
 
 
 # Get All Orders
@@ -60,17 +63,24 @@ def get_customer_orders(customer_id):
 def update_order(id):
     order = Order.query.get_or_404(id)
 
+    # TODO: if no value keep saved value
     order.date = request.json['date']
     order.amount = request.json['amount']
 
-    db.session.commit()
-    return order_schema.jsonify(order)
+    try:
+        db.session.commit()
+        return order_schema.jsonify(order)
+    except:
+        raise Exception("Could not update order from the database")
 
 
 # Delete a Order
 @order_blueprint.route('/order/<id>', methods=['DELETE'])
 def delete_order(id):
     order = Order.query.get_or_404(id)
-    db.session.delete(order)
-    db.session.commit()
-    return order_schema.jsonify(order)
+    try:
+        db.session.delete(order)
+        db.session.commit()
+        return order_schema.jsonify(order)
+    except:
+        raise Exception("Could not delete order from database")

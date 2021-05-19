@@ -30,9 +30,14 @@ class CustomerSchema(ma.Schema):
     orders = fields.Nested(OrderSchema(many=True))
 
 
-# Customer Schema
+# Filtered Customer Schema
 class FilteredCustomerSchema(ma.Schema):
     id = fields.Str()
     firstName = fields.Str()
     lastName = fields.Str()
     email = fields.Str()
+
+
+# Customer Schema
+class CustomerIdSchema(ma.Schema):
+    id = fields.Str()

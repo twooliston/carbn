@@ -4,10 +4,11 @@ from flask import Blueprint, request, jsonify
 
 from carbn_app.extensions import db
 
-from carbn_app.Models.Customer import Customer, CustomerSchema, FilteredCustomerSchema
+from carbn_app.Models.Customer import Customer, CustomerSchema, FilteredCustomerSchema, CustomerIdSchema
 
 # Init Schema
 customer_schema = CustomerSchema()
+customer_id_schema = CustomerIdSchema()
 customers_schema = CustomerSchema(many=True)
 filtered_customers_schema = FilteredCustomerSchema(many=True)
 
@@ -17,15 +18,21 @@ customer_blueprint = Blueprint('customer_blueprint', __name__)
 # Add New Customer
 @customer_blueprint.route('/customer', methods=['POST'])
 def add_customer():
-    id = request.json['id']
+    id = db.session.query(Customer).count()
     firstName = request.json['firstName']
     lastName = request.json['lastName']
     email = request.json['email']
 
+    if type(firstName) != str or type(lastName) != str or type(email) != str:
+        raise TypeError("The request contained data of the wrong type")
+
     new_customer = Customer(id, firstName, lastName, email)
-    db.session.add(new_customer)
-    db.session.commit()
-    return customer_schema.jsonify(new_customer)
+    try:
+        db.session.add(new_customer)
+        db.session.commit()
+        return customer_id_schema.jsonify(new_customer)
+    except:
+        raise Exception("Could not commit new customer to database")
 
 
 # Get All Customers
@@ -41,21 +48,31 @@ def get_customers():
 def update_customer(id):
     customer = Customer.query.get_or_404(id)
 
+    # TODO: if no value keep saved value
     customer.firstName = request.json['firstName']
     customer.lastName = request.json['lastName']
     customer.email = request.json['email']
 
-    db.session.commit()
-    return customer_schema.jsonify(customer)
+    if type(customer.firstName) != str or type(customer.lastName) != str or type(customer.email) != str:
+        raise TypeError("The request contained data of the wrong type")
+
+    try:
+        db.session.commit()
+        return customer_schema.jsonify(customer)
+    except:
+        raise Exception("Could not update the customer in the database")
 
 
 # Delete a Customer
 @customer_blueprint.route('/customer/<id>', methods=['DELETE'])
 def delete_customer(id):
     customer = Customer.query.get_or_404(id)
-    db.session.delete(customer)
-    db.session.commit()
-    return customer_schema.jsonify(customer)
+    try:
+        db.session.delete(customer)
+        db.session.commit()
+        return customer_schema.jsonify(customer)
+    except:
+        raise Exception("Could not delete customer from the database")
 
 
 # Search for a Customer
